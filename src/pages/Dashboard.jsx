@@ -72,7 +72,7 @@ const Dashboard = () => {
       totalAssets
       : 0;
 
-  const totalIdleCount = data.idleAssets.length;
+  const totalIdleCount = data.idleAssets.filter((item) => item.status === "underutilized").length;
   const highRiskAssets = data.utilization.filter((item) => item.utilization_percentage < 20).length;
 
   const totalDowntimeHours = data.downtime.reduce((acc, curr) => acc + curr.total_downtime_hours, 0);
@@ -156,7 +156,7 @@ const Dashboard = () => {
           <h2 className="text-xl font-semibold mb-4 text-black">Current Fleet Overview</h2>
           <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar">
             {data.utilization.map((item) => {
-              const isIdle = data.idleAssets.some(idle => idle.asset_id === item.asset_id);
+              const isIdle = data.idleAssets.some(idle => idle.asset_id === item.asset_id && idle.status === "underutilized");
               const downtime = data.downtime.find(d => d.asset_id === item.asset_id);
               const impact = data.revenueImpact.find(r => r.asset_id === item.asset_id);
 

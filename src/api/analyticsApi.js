@@ -59,3 +59,15 @@ export const getUtilizationForecast = async () => {
     throw new Error(error.response?.data?.detail || "Failed to fetch utilization forecast");
   }
 };
+
+/**
+ * AI GOVERNANCE (LLM USAGE)
+ */
+export const getLlmUsage = async () => {
+  try {
+    const response = await api.get("/analytics/llm-usage");
+    return response.data.data;
+  } catch (error) {
+    throw new Error(error.response?.data?.detail || "Failed to fetch LLM usage logs");
+  }
+};
