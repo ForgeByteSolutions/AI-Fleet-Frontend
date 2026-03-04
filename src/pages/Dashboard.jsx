@@ -26,6 +26,9 @@ const Dashboard = () => {
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
+  // search state for filtering assets
+  const [searchTerm, setSearchTerm] = useState("");
+  const [activeSearch, setActiveSearch] = useState(false);
 
   useEffect(() => {
     const fetchAnalytics = async () => {
@@ -80,6 +83,12 @@ const Dashboard = () => {
 
   const totalRevenueLost = data.revenueImpact.reduce((acc, curr) => acc + curr.total_downtime_loss, 0);
 
+  const filteredUtilization = activeSearch && searchTerm
+    ? data.utilization.filter((item) =>
+        item.asset_id.toLowerCase().includes(searchTerm.trim().toLowerCase())
+      )
+    : data.utilization;
+
   return (
     <div>
       <h1 className="text-3xl font-bold mb-6">Overview Dashboard</h1>
@@ -132,7 +141,7 @@ const Dashboard = () => {
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
                 <XAxis dataKey="month" stroke="#9ca3af" tickMargin={10} />
-                <YAxis stroke="#9ca3af" domain={['dataMin - 10', 'dataMax + 10']} axisLine={false} tickLine={false} />
+                <YAxis stroke="#9ca3af" domain={[0,120]} axisLine={false} tickLine={false} />
                 <Tooltip
                   contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #d1d5db', borderRadius: '12px', color: '#000' }}
                   itemStyle={{ color: '#ef4444', fontWeight: 'bold' }}
@@ -153,10 +162,32 @@ const Dashboard = () => {
 
         {/* COMBINED ASSET DETAILS LIST */}
         <div className="bg-white p-6 rounded-2xl border border-gray-200 shadow-lg flex flex-col h-full max-h-[416px]">
-          <h2 className="text-xl font-semibold mb-4 text-black">Current Fleet Overview</h2>
+          {/* search bar alongside title */}
+          <div className="flex items-center justify-between mb-4">
+            <h2 className="text-xl font-semibold text-black">Current Fleet Overview</h2>
+            <input
+              type="text"
+              placeholder="Search asset id..."
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                if (e.target.value === '') {
+                  setActiveSearch(false);
+                }
+              }}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  setActiveSearch(true);
+                }
+              }}
+              className="border border-gray-700 rounded px-3 py-1 text-sm"
+            />
+          </div>
           <div className="space-y-4 overflow-y-auto pr-2 custom-scrollbar">
-            {data.utilization.map((item) => {
-              const isIdle = data.idleAssets.some(idle => idle.asset_id === item.asset_id && idle.status === "underutilized");
+            {filteredUtilization.length === 0 && activeSearch ? (
+              <p className="text-center text-gray-500">No matching asset found.</p>
+            ) : filteredUtilization.map((item) => {
+              const isIdle = data.idleAssets.some(idle => idle.asset_id === item.asset_id);
               const downtime = data.downtime.find(d => d.asset_id === item.asset_id);
               const impact = data.revenueImpact.find(r => r.asset_id === item.asset_id);
 

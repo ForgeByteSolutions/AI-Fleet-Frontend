@@ -49,9 +49,10 @@ const Login = () => {
       {/* Logo */}
       <div className="absolute top-8 left-8 z-20">
         <h1 className="text-4xl font-bold">
-          <span className="text-red-600">AI</span>{" "}
-          <span className="text-white drop-shadow-lg">FLEET</span>
+          <span className="text-red-600">FLEETINTELLECT</span>{" "}
+          <span className="text-white drop-shadow-lg">AI</span>
         </h1>
+        <p className="text-sm text-white mt-2 drop-shadow-lg">AI Decision Platform for Asset Optimization</p>
       </div>
 
       {/* Glassmorphism Login Card */}

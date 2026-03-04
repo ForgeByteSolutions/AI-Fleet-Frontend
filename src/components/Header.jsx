@@ -14,19 +14,17 @@ const Header = () => {
     const path = location.pathname.split("/")[1];
     switch (path) {
       case "risk":
-        return "AI FLEET RISKS";
+        return "FLEETINTELLECT AI ASSET RISK INTELLIGENCE";
       case "maintenance":
-        return "AI FLEET MAINTENANCE";
+        return "FLEETINTELLECT AI MAINTENANCE";
       case "decisions":
-        return "AI FLEET DECISIONS";
+        return "FLEETINTELLECT AI PROJECT UTILIZATION";
       case "dashboard":
-        return "AI FLEET DASHBOARD";
+        return "FLEETINTELLECT AI DASHBOARD";
       case "documents":
-        return "AI FLEET DOCUMENTS";
+        return "FLEETINTELLECT AI KNOWLEDGE VAULT";
       case "sql-rag":
-        return "SQL-RAG DATABASE ASSISTANT";
-      case "ai-governance":
-        return "AI GOVERNANCE DASHBOARD";
+        return "FLEETINTELLECT AI DATA INTELLIGENCE BOT";
       default:
         // fallback to dashboard style title for unknown or root routes
         return "AI FLEET DASHBOARD";
@@ -94,7 +92,7 @@ const Header = () => {
               d="M16 17l-4 4m0 0l-4-4m4 4V3"
             />
           </svg>
-          Ask AI
+          Executive AI Agent
         </Link>
 
         <div className="relative" ref={menuRef}>

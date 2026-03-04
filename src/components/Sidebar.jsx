@@ -5,17 +5,17 @@ const Sidebar = () => {
   return (
     <div className="fixed top-0 left-0 h-full w-64 bg-white border-r border-gray-200 p-6">
       <h1 className="text-2xl font-bold text-red-600 mb-10">
-        AI Fleet
+        FLEETINTELLECT AI
       </h1>
 
       <nav className="space-y-2 text-black">
         {[
           { label: "Dashboard", to: "/dashboard" },
-          { label: "Risk", to: "/risk" },
-          { label: "Documents", to: "/documents" },
+          { label: "Asset Risk Intelligence", to: "/risk" },
+          { label: "Fleet Knowledge Vault", to: "/documents" },
           { label: "Maintenance", to: "/maintenance" },
           { label: "Project Utilization", to: "/decisions" },
-          { label: "SQL-RAG", to: "/sql-rag" },
+          { label: "Data Intelligence Bot", to: "/sql-rag" },
         ].map((item) => (
           <NavLink
             key={item.to}
