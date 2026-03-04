@@ -6,6 +6,7 @@ import {
   getRevenueImpact,
   getUtilizationForecast,
 } from "../api/analyticsApi";
+import { getRiskAnalysis } from "../api/riskApi";
 import {
   LineChart,
   Line,
@@ -15,6 +16,7 @@ import {
   Tooltip,
   ResponsiveContainer,
 } from "recharts";
+import SkeletonLoader from "../components/SkeletonLoader";
 
 const Dashboard = () => {
   const [data, setData] = useState({
@@ -23,6 +25,7 @@ const Dashboard = () => {
     downtime: [],
     revenueImpact: [],
     forecast: [],
+    riskAnalysis: [],
   });
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -39,12 +42,14 @@ const Dashboard = () => {
           downtimeData,
           revenueData,
           forecastData,
+          riskData,
         ] = await Promise.all([
           getUtilization(),
           getIdleAssets(),
           getDowntime(),
           getRevenueImpact(),
           getUtilizationForecast(),
+          getRiskAnalysis(),
         ]);
 
         setData({
@@ -53,6 +58,7 @@ const Dashboard = () => {
           downtime: downtimeData || [],
           revenueImpact: revenueData || [],
           forecast: forecastData || [],
+          riskAnalysis: riskData?.data || riskData || [],
         });
       } catch (err) {
         setError("Failed to fetch analytics: " + err.message);
@@ -64,8 +70,8 @@ const Dashboard = () => {
     fetchAnalytics();
   }, []);
 
-  if (loading) return <div className="text-white p-8">Loading analytics...</div>;
-  if (error) return <div className="text-red-500 p-8">{error}</div>;
+  if (loading) return <SkeletonLoader />;
+  if (error) return <div className="text-red-500 font-semibold text-center mt-10 p-8">{error}</div>;
 
   const totalAssets = data.utilization.length;
 
@@ -76,7 +82,7 @@ const Dashboard = () => {
       : 0;
 
   const totalIdleCount = data.idleAssets.filter((item) => item.status === "underutilized").length;
-  const highRiskAssets = data.utilization.filter((item) => item.utilization_percentage < 20).length;
+  const highRiskAssets = data.riskAnalysis.filter((item) => item.risk_rank === "High").length;
 
   const totalDowntimeHours = data.downtime.reduce((acc, curr) => acc + curr.total_downtime_hours, 0);
   const totalRepairCost = data.downtime.reduce((acc, curr) => acc + curr.estimated_repair_cost, 0);
@@ -85,8 +91,8 @@ const Dashboard = () => {
 
   const filteredUtilization = activeSearch && searchTerm
     ? data.utilization.filter((item) =>
-        item.asset_id.toLowerCase().includes(searchTerm.trim().toLowerCase())
-      )
+      item.asset_id.toLowerCase().includes(searchTerm.trim().toLowerCase())
+    )
     : data.utilization;
 
   return (
@@ -141,7 +147,7 @@ const Dashboard = () => {
               >
                 <CartesianGrid strokeDasharray="3 3" stroke="#1f2937" vertical={false} />
                 <XAxis dataKey="month" stroke="#9ca3af" tickMargin={10} />
-                <YAxis stroke="#9ca3af" domain={[0,120]} axisLine={false} tickLine={false} />
+                <YAxis stroke="#9ca3af" domain={[0, 120]} axisLine={false} tickLine={false} />
                 <Tooltip
                   contentStyle={{ backgroundColor: '#ffffff', border: '1px solid #d1d5db', borderRadius: '12px', color: '#000' }}
                   itemStyle={{ color: '#ef4444', fontWeight: 'bold' }}

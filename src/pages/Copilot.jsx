@@ -5,9 +5,9 @@ import { useDocuments } from "../context/DocumentsContext";
 const Copilot = () => {
   const { documents } = useDocuments();
 
-const indexedCount = documents.filter(
-  (doc) => doc.status === "Indexed"
-).length;
+  const indexedCount = documents.filter(
+    (doc) => doc.status === "Indexed"
+  ).length;
   const [messages, setMessages] = useState([
     {
       role: "assistant",
@@ -159,9 +159,9 @@ const indexedCount = documents.filter(
   };
 
   return (
-    <div className="flex h-full bg-white rounded-2xl shadow-xl overflow-hidden">
+    <div className="flex h-[calc(100vh-6rem)] bg-white rounded-2xl shadow-xl overflow-hidden">
       {/* Left Sidebar - History */}
-      <div className={`${sidebarOpen ? 'w-64' : 'w-16'} border-r border-gray-200 flex flex-col transition-all duration-300`}>
+      <div className={`${sidebarOpen ? 'w-64' : 'w-16'} h-full border-r border-gray-200 flex flex-col transition-all duration-300`}>
         {/* Sidebar Header */}
         <div className="p-4 border-b border-gray-200 flex items-center justify-between">
           {sidebarOpen && <h2 className="font-semibold text-sm text-black">History</h2>}
@@ -238,71 +238,69 @@ const indexedCount = documents.filter(
     )} */}
           {/* Chat Area */}
           <div ref={chatContainerRef} className="flex-1 overflow-y-auto space-y-4 mb-4 pr-2">
-          {messages.map((msg, index) => (
-            <div
-              key={index}
-              className={`flex flex-col max-w-[75%] ${
-                msg.role === "user"
-                  ? "ml-auto items-end"
-                  : "items-start"
-              }`}
-            >
+            {messages.map((msg, index) => (
               <div
-                className={`p-3 rounded-2xl whitespace-pre-wrap transition-all duration-300 ${
-                  msg.role === "user"
-                    ? "bg-primary text-white"
-                    : "bg-gray-200 text-black"
-                }`}
+                key={index}
+                className={`flex flex-col max-w-[75%] ${msg.role === "user"
+                    ? "ml-auto items-end"
+                    : "items-start"
+                  }`}
               >
-                {msg.content}
-              </div>
-
-              {/* Timestamp */}
-              <span className="text-xs text-gray-500 mt-1">
-                {msg.timestamp.toLocaleTimeString()}
-              </span>
-
-              {/* Sources */}
-              {msg.sources && msg.sources.length > 0 && (
-                <div className="mt-2 text-xs text-gray-400">
-                  <strong>Sources:</strong>
-                  {msg.sources.map((src, i) => (
-                    <div key={i}>• {src}</div>
-                  ))}
+                <div
+                  className={`p-3 rounded-2xl whitespace-pre-wrap transition-all duration-300 ${msg.role === "user"
+                      ? "bg-primary text-white"
+                      : "bg-gray-200 text-black"
+                    }`}
+                >
+                  {msg.content}
                 </div>
-              )}
-            </div>
-          ))}
 
-          {/* Typing Indicator */}
-          {loading && (
-            <div className="flex items-center">
-              <span className="roller text-2xl" />
-            </div>
-          )}
+                {/* Timestamp */}
+                <span className="text-xs text-gray-500 mt-1">
+                  {msg.timestamp.toLocaleTimeString()}
+                </span>
 
-          <div ref={chatEndRef} />
-        </div>
+                {/* Sources */}
+                {msg.sources && msg.sources.length > 0 && (
+                  <div className="mt-2 text-xs text-gray-400">
+                    <strong>Sources:</strong>
+                    {msg.sources.map((src, i) => (
+                      <div key={i}>• {src}</div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            ))}
 
-        {/* Input */}
-        <div className="flex gap-3">
-          <input
-            type="text"
-            value={input}
-            onChange={(e) => setInput(e.target.value)}
-            onKeyDown={handleKeyPress}
-            placeholder="Ask something about fleet..."
-            className="flex-1 bg-gray-100 p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary transition text-black"
-          />
+            {/* Typing Indicator */}
+            {loading && (
+              <div className="flex items-center">
+                <span className="roller text-2xl" />
+              </div>
+            )}
 
-          <button
-            onClick={handleSend}
-            disabled={loading}
-            className="bg-primary p-3 rounded-full hover:bg-red-700 transition disabled:opacity-50 text-white flex items-center justify-center"
-          >
-            ➤
-          </button>
-        </div>
+            <div ref={chatEndRef} />
+          </div>
+
+          {/* Input */}
+          <div className="flex gap-3">
+            <input
+              type="text"
+              value={input}
+              onChange={(e) => setInput(e.target.value)}
+              onKeyDown={handleKeyPress}
+              placeholder="Ask something about fleet..."
+              className="flex-1 bg-gray-100 p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary transition text-black"
+            />
+
+            <button
+              onClick={handleSend}
+              disabled={loading}
+              className="bg-primary p-3 rounded-full hover:bg-red-700 transition disabled:opacity-50 text-white flex items-center justify-center"
+            >
+              ➤
+            </button>
+          </div>
         </div>
       </div>
     </div>

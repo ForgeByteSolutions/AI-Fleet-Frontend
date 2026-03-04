@@ -409,7 +409,8 @@
 
 
 import { useState, useEffect, useRef } from "react";
-import { uploadDocument, getDocumentStatus, listDocuments } from "../api/documentsApi";
+import { uploadDocument, getDocumentStatus, listDocuments, deleteDocument } from "../api/documentsApi";
+import { toast } from "react-toastify";
 import { useDocuments } from "../context/DocumentsContext";
 
 const Documents = () => {
@@ -445,6 +446,22 @@ const Documents = () => {
     const interval = setInterval(fetchDocuments, 10000);
     return () => clearInterval(interval);
   }, []);
+
+  const handleDelete = async (docId) => {
+    if (!window.confirm("Are you sure you want to permanently delete this document from the vector database?")) return;
+
+    try {
+      await deleteDocument(docId);
+      toast.success("Document deleted successfully");
+
+      // Update local state without waiting for polling
+      setAllDocuments(prev => prev.filter(doc => doc.doc_id !== docId));
+      setFiles(prev => prev.filter(file => file.docId !== docId));
+
+    } catch (error) {
+      console.error("Failed to delete document", error);
+    }
+  };
 
   const handleUpload = async (file) => {
     const tempId = Date.now();
@@ -500,14 +517,14 @@ const Documents = () => {
   const pollStatus = (docId, localId) => {
     let pollCount = 0;
     const maxAttempts = 120; // Stop polling after 2 minutes (120 * 1 second)
-    
+
     const interval = setInterval(async () => {
       pollCount++;
       try {
         const statusRes = await getDocumentStatus(docId);
 
         console.log("STATUS RESPONSE:", statusRes);
-        
+
         // Handle response structure: statusRes = {status: "success", data: {status: "...", ...}}
         const taskData = statusRes?.data;
         const taskStatus = taskData?.status;
@@ -598,11 +615,10 @@ const Documents = () => {
         }}
         onDragLeave={() => setDragActive(false)}
         onDrop={handleDrop}
-        className={`border-2 border-dashed rounded-2xl p-16 text-center transition-all ${
-          dragActive
+        className={`border-2 border-dashed rounded-2xl p-16 text-center transition-all ${dragActive
             ? "border-red-600 bg-gray-900 scale-105"
             : "border-gray-600 bg-gray-900"
-        }`}
+          }`}
       >
         <p className="text-xl mb-2">Drag & Drop PDF here</p>
         <p className="text-gray-400 mb-4">or</p>
@@ -636,13 +652,12 @@ const Documents = () => {
 
             <div className="w-full bg-gray-700 rounded-full h-2">
               <div
-                className={`h-2 rounded-full transition-all duration-500 ${
-                  file.status === "Failed"
+                className={`h-2 rounded-full transition-all duration-500 ${file.status === "Failed"
                     ? "bg-red-500"
                     : file.status === "Indexed"
-                    ? "bg-green-500"
-                    : "bg-red-600"
-                }`}
+                      ? "bg-green-500"
+                      : "bg-red-600"
+                  }`}
                 style={{ width: `${file.progress}%` }}
               />
             </div>
@@ -653,7 +668,7 @@ const Documents = () => {
       {/* All Documents Section */}
       <div className="mt-16">
         <h2 className="text-2xl font-bold mb-6 text-black">Uploaded Documents</h2>
-        
+
         {loadingDocuments ? (
           <div className="flex justify-center items-center h-32">
             <p className="text-gray-400">Loading documents...</p>
@@ -677,14 +692,23 @@ const Documents = () => {
                     <div className="space-y-1 text-sm text-gray-400">
                       <p>Document ID: <span className="text-gray-300">{doc.doc_id}</span></p>
                       <p>
-                        Created: 
+                        Created:
                         <span className="text-gray-300">
                           {doc.created_at ? new Date(doc.created_at).toLocaleString() : 'N/A'}
                         </span>
                       </p>
                     </div>
                   </div>
-                  <div className="text-right">
+                  <div className="text-right flex flex-col items-end gap-3">
+                    <button
+                      onClick={() => handleDelete(doc.doc_id)}
+                      className="text-gray-400 hover:text-red-500 transition-colors p-1"
+                      title="Delete Document"
+                    >
+                      <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                      </svg>
+                    </button>
                     <span className="inline-block px-4 py-2 bg-green-600 text-white rounded-lg text-sm font-semibold">
                       Indexed
                     </span>

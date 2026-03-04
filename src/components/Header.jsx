@@ -3,7 +3,7 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import { useState, useEffect, useRef } from "react";
 import ProfileAvatar from "./ProfileAvatar";
 
-const Header = () => {
+const Header = ({ toggleSidebar }) => {
   const { logout, user } = useAuth();
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const menuRef = useRef(null);
@@ -48,15 +48,33 @@ const Header = () => {
   };
 
   return (
-    <div className="fixed top-0 left-64 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-8 z-10">
-      <h2 className="text-lg font-semibold text-black">
-        {getTitle()}
-      </h2>
+    <div className="fixed top-0 md:left-64 left-0 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-8 z-20">
+      <div className="flex items-center gap-3">
+        {/* Hamburger Menu (Mobile Only) */}
+        <button
+          onClick={toggleSidebar}
+          className="md:hidden p-2 text-gray-600 hover:bg-gray-100 rounded-lg transition"
+        >
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            className="h-6 w-6"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+
+        <h2 className="text-sm md:text-lg font-semibold text-black truncate max-w-[150px] md:max-w-none">
+          {getTitle()}
+        </h2>
+      </div>
 
       <div className="flex items-center gap-4">
         <Link
           to="/ai-governance"
-          className="inline-flex items-center px-4 py-2 rounded-full text-white bg-gradient-to-r from-green-500 to-teal-500 hover:opacity-90 transition shadow-sm"
+          className="hidden md:inline-flex items-center px-4 py-2 rounded-full text-white bg-gradient-to-r from-green-500 to-teal-500 hover:opacity-90 transition shadow-sm whitespace-nowrap"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -76,7 +94,7 @@ const Header = () => {
         </Link>
         <Link
           to="/copilot"
-          className="inline-flex items-center px-4 py-2 rounded-full text-white bg-gradient-to-r from-pink-500 to-blue-500 hover:opacity-90 transition shadow-sm"
+          className="hidden md:inline-flex items-center px-4 py-2 rounded-full text-white bg-gradient-to-r from-pink-500 to-blue-500 hover:opacity-90 transition shadow-sm whitespace-nowrap"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
