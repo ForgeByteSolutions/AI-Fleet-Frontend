@@ -177,13 +177,13 @@ const SqlRag = () => {
           </button>
         </div>
         
-        <div className="flex-1 overflow-y-auto space-y-2">
+        <div className="h-[80vh] overflow-y-auto space-y-2 pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
           {historyLoading ? (
             <div className="flex justify-center items-center h-full">
               <p className="text-xs text-gray-500">Loading...</p>
             </div>
           ) : chatHistory.length > 0 ? (
-            chatHistory.map((msg, index) => (
+            [...chatHistory].reverse().map((msg, index) => (
               <div
                 key={index}
                 onClick={() => handleHistoryClick(msg)}
@@ -263,7 +263,7 @@ const SqlRag = () => {
         </div>
 
         {/* Input */}
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-shrink-0">
           <input
             type="text"
             value={input}
@@ -271,7 +271,7 @@ const SqlRag = () => {
             onKeyDown={handleKeyPress}
             placeholder="Ask about database tables, assets, maintenance, etc..."
             disabled={loading || historyLoading}
-            className="flex-1 bg-gray-100 p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary transition text-black disabled:opacity-50"
+            className="flex-1 bg-gray-100 p-3 rounded-xl border-2 border-black outline-none focus:border-red-600 focus:ring-0 transition text-black disabled:opacity-50"
           />
 
           <button

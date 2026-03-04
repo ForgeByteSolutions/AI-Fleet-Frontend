@@ -106,9 +106,24 @@ const indexedCount = documents.filter(
     }
   };
 
+  const handleClearChat = () => {
+    setMessages([
+      {
+        role: "assistant",
+        content: "Hello 👋 I am your AI Fleet Copilot. How can I help you today?",
+        timestamp: new Date()
+      }
+    ]);
+    setInput("");
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop = 0;
+    }
+  };
+
   const handleLoadHistory = (clickedIndex) => {
-    // Load conversation pair (user question + assistant response)
-    const clickedItem = history[clickedIndex];
+    // Convert display index (from reversed array) to actual history array index
+    const actualIndex = history.length - 1 - clickedIndex;
+    const clickedItem = history[actualIndex];
     const messagesToShow = [
       {
         role: "assistant",
@@ -126,7 +141,7 @@ const indexedCount = documents.filter(
       });
 
       // Find the next assistant response
-      for (let i = clickedIndex + 1; i < history.length; i++) {
+      for (let i = actualIndex + 1; i < history.length; i++) {
         if (history[i].role === "assistant") {
           messagesToShow.push({
             role: "assistant",
@@ -138,7 +153,7 @@ const indexedCount = documents.filter(
       }
     } else {
       // If clicked on assistant message, find the previous user message
-      for (let i = clickedIndex - 1; i >= 0; i--) {
+      for (let i = actualIndex - 1; i >= 0; i--) {
         if (history[i].role === "user") {
           messagesToShow.push({
             role: "user",
@@ -165,17 +180,28 @@ const indexedCount = documents.filter(
         {/* Sidebar Header */}
         <div className="p-4 border-b border-gray-200 flex items-center justify-between">
           {sidebarOpen && <h2 className="font-semibold text-sm text-black">History</h2>}
-          <button
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            className="p-1 hover:bg-gray-100 rounded transition text-black"
-            title={sidebarOpen ? "Collapse" : "Expand"}
-          >
-            {sidebarOpen ? "◀" : "▶"}
-          </button>
+          <div className="flex items-center gap-2">
+            {sidebarOpen && (
+              <button
+                onClick={handleClearChat}
+                title="Clear chat"
+                className="text-gray-500 hover:text-red-600 transition text-lg"
+              >
+                ✕
+              </button>
+            )}
+            <button
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+              className="p-1 hover:bg-gray-100 rounded transition text-black"
+              title={sidebarOpen ? "Collapse" : "Expand"}
+            >
+              {sidebarOpen ? "◀" : "▶"}
+            </button>
+          </div>
         </div>
 
         {/* History List */}
-        <div className="flex-1 overflow-y-auto">
+        <div className="h-[80vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-gray-100">
           {historyLoading ? (
             <div className="p-4 text-center text-sm text-gray-500">
               {sidebarOpen && "Loading..."}
@@ -186,7 +212,7 @@ const indexedCount = documents.filter(
             </div>
           ) : (
             <div className="p-2 space-y-2">
-              {history.map((item, index) => (
+              {[...history].reverse().map((item, index) => (
                 <button
                   key={index}
                   onClick={() => handleLoadHistory(index)}
@@ -220,7 +246,7 @@ const indexedCount = documents.filter(
       {/* Main Chat Area */}
       <div className="flex-1 flex flex-col text-black">
         {/* Hero Image */}
-        <div className="w-full h-48 overflow-hidden">
+        <div className="w-full h-40 overflow-hidden">
           <img
             src="/fleet-hero.jpg.png"
             alt="Fleet Operations"
@@ -237,7 +263,7 @@ const indexedCount = documents.filter(
       </div>
     )} */}
           {/* Chat Area */}
-          <div ref={chatContainerRef} className="flex-1 overflow-y-auto space-y-4 mb-4 pr-2">
+          <div ref={chatContainerRef} className="flex-1 overflow-y-auto space-y-4 mb-2 pr-2">
           {messages.map((msg, index) => (
             <div
               key={index}
@@ -285,14 +311,14 @@ const indexedCount = documents.filter(
         </div>
 
         {/* Input */}
-        <div className="flex gap-3">
+        <div className="flex gap-3 flex-shrink-0">
           <input
             type="text"
             value={input}
             onChange={(e) => setInput(e.target.value)}
             onKeyDown={handleKeyPress}
             placeholder="Ask something about fleet..."
-            className="flex-1 bg-gray-100 p-3 rounded-xl outline-none focus:ring-2 focus:ring-primary transition text-black"
+            className="flex-1 bg-gray-100 p-3 rounded-xl border-2 border-black outline-none focus:border-red-600 focus:ring-0 transition text-black"
           />
 
           <button

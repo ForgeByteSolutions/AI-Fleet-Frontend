@@ -10,7 +10,17 @@ export default {
         primary: "#B91C1C",
         darkbg: "#111111",
       },
+      scrollbar: {
+        thumb: {
+          DEFAULT: '#d1d5db',
+        },
+        track: {
+          DEFAULT: '#f3f4f6',
+        },
+      },
     },
   },
-  plugins: [],
+  plugins: [
+    require('tailwind-scrollbar'),
+  ],
 }
