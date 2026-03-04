@@ -21,3 +21,21 @@ export const askCopilot = async (question, sessionId = null) => {
 
   return response.json();
 };
+
+export const getCopilotHistory = async () => {
+  const token = localStorage.getItem("authToken");
+
+  const response = await fetch(`${BASE_URL}/copilot/history`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${token}`
+    }
+  });
+
+  if (!response.ok) {
+    throw new Error("Failed to fetch copilot history");
+  }
+
+  return response.json();
+};
