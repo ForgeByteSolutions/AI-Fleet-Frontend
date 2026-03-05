@@ -8,7 +8,7 @@ const Sidebar = ({ isOpen, toggleSidebar }) => {
         } md:translate-x-0 overflow-y-auto`}
     >
       <div className="flex justify-between items-center mb-10">
-        <h1 className="text-xl md:text-2xl font-bold text-red-600">
+        <h1 className="text-lg md:text-xl font-bold text-red-600">
           FLEETINTELLECT AI
         </h1>
         {/* Close Button (Mobile Only) */}

@@ -1,4 +1,4 @@
-const BASE_URL = "http://localhost:8000";
+const BASE_URL = "http://192.168.0.158:8000";
 
 export const askSqlRag = async (question, sessionId = null) => {
   const token = localStorage.getItem("authToken");
@@ -16,7 +16,13 @@ export const askSqlRag = async (question, sessionId = null) => {
   });
 
   if (!response.ok) {
-    throw new Error("SQL-RAG request failed");
+    try {
+      const errorData = await response.json();
+      throw new Error(errorData.detail || `Server responded with ${response.status}`);
+    } catch (e) {
+      if (e.message.includes("Server responded with") || e.message.includes("An error occurred")) throw e;
+      throw new Error(`SQL-RAG request failed with status ${response.status}`);
+    }
   }
 
   return response.json();

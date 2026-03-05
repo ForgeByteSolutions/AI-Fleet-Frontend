@@ -48,7 +48,12 @@ const Header = ({ toggleSidebar }) => {
   };
 
   return (
-    <div className="fixed top-0 md:left-64 left-0 right-0 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 md:px-8 z-20">
+    <div
+      className="fixed top-0 md:left-64 left-0 right-0 h-16 border-b border-gray-200 flex items-center justify-between px-4 md:px-8 z-20 bg-cover bg-center"
+      style={{ backgroundImage: "url('/fleet-hero.jpg.png')" }}
+    >
+      {/* Frosted Glass Overlay to ensure text readability */}
+      <div className="absolute inset-0 bg-white/85 backdrop-blur- z-[-1]"></div>
       <div className="flex items-center gap-3">
         {/* Hamburger Menu (Mobile Only) */}
         <button
@@ -74,7 +79,7 @@ const Header = ({ toggleSidebar }) => {
       <div className="flex items-center gap-4">
         <Link
           to="/ai-governance"
-          className="hidden md:inline-flex items-center px-4 py-2 rounded-full text-white bg-gradient-to-r from-green-500 to-teal-500 hover:opacity-90 transition shadow-sm whitespace-nowrap"
+          className="hidden md:inline-flex items-center px-4 py-2 rounded-full text-white bg-gradient-to-r from-gray-700 to-gray-900 hover:opacity-90 transition shadow-sm whitespace-nowrap"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -94,7 +99,7 @@ const Header = ({ toggleSidebar }) => {
         </Link>
         <Link
           to="/copilot"
-          className="hidden md:inline-flex items-center px-4 py-2 rounded-full text-white bg-gradient-to-r from-pink-500 to-blue-500 hover:opacity-90 transition shadow-sm whitespace-nowrap"
+          className="hidden md:inline-flex items-center px-4 py-2 rounded-full text-white bg-gradient-to-r from-red-500 to-red-700 hover:opacity-90 transition shadow-sm whitespace-nowrap"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
