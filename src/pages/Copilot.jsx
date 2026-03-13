@@ -332,7 +332,7 @@ const Copilot = () => {
           </div>
 
           {/* Input Box Area */}
-          < div className="bg-white p-2 rounded-2xl shadow-lg border border-gray-200 flex flex-col transition-all focus-within:ring-2 focus-within:ring-red-500/20 focus-within:border-red-400" >
+          <div className="bg-white p-2 rounded-2xl shadow-lg border border-gray-200 flex flex-col transition-all focus-within:ring-2 focus-within:ring-red-500/20 focus-within:border-red-400">
             <input
               type="text"
               value={input}

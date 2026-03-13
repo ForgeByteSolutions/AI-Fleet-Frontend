@@ -1,4 +1,4 @@
-const BASE_URL = "http://192.168.0.158:8000";
+const BASE_URL = import.meta.env.VITE_API_BASE_URL || "http://localhost:8000";
 
 export const askCopilot = async (question, sessionId = null) => {
   const token = localStorage.getItem("authToken");
