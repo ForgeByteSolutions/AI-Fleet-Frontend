@@ -29,3 +29,8 @@ export const listDocuments = async () => {
   const response = await axiosInstance.get("/documents/");
   return response.data;
 };
+
+export const deleteDocument = async (docId) => {
+  const response = await axiosInstance.delete(`/documents/${docId}`);
+  return response.data;
+};

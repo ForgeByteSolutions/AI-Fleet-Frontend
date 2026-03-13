@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { buyVsReallocate, simulateProject } from "../api/decisionsApi";
+import SkeletonLoader from "../components/SkeletonLoader";
 
 const Decisions = () => {
   const [projectId, setProjectId] = useState("");
@@ -51,6 +52,9 @@ const Decisions = () => {
       setSimulateLoading(false);
     }
   };
+
+  if (loading) return <SkeletonLoader />;
+  if (error) return <div className="text-red-500 font-semibold text-center mt-10 p-8">{error}</div>;
 
   return (
     <div className="text-white p-8">

@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getRiskAnalysis } from "../api/riskApi";
+import SkeletonLoader from "../components/SkeletonLoader";
 
 const Risk = () => {
   const [data, setData] = useState([]);
@@ -28,8 +29,8 @@ const Risk = () => {
     fetchRisk();
   }, []);
 
-  if (loading) return <div className="text-white">Loading risk data...</div>;
-  if (error) return <div className="text-red-500">{error}</div>;
+  if (loading) return <SkeletonLoader />;
+  if (error) return <div className="text-red-500 font-semibold text-center mt-10">{error}</div>;
 
   const totalAssets = data.length;
   const highRisk = data.filter(item => item.risk_rank === "High").length;
@@ -134,13 +135,12 @@ const Risk = () => {
                 <td className="px-4 py-2 border">{item.risk_features.failure_count}</td>
                 <td className="px-4 py-2 border">
                   <span
-                    className={`font-bold ${
-                      item.risk_rank === "High"
+                    className={`font-bold ${item.risk_rank === "High"
                         ? "text-red-500"
                         : item.risk_rank === "Medium"
-                        ? "text-yellow-500"
-                        : "text-green-500"
-                    }`}
+                          ? "text-yellow-500"
+                          : "text-green-500"
+                      }`}
                   >
                     {item.risk_rank}
                   </span>
@@ -173,54 +173,53 @@ const Risk = () => {
               key={item.asset_id}
               className="bg-white p-6 rounded-lg border border-gray-200"
             >
-            <h2 className="text-lg font-semibold text-red-500">
-              Asset: {item.asset_id}
-            </h2>
+              <h2 className="text-lg font-semibold text-red-500">
+                Asset: {item.asset_id}
+              </h2>
 
-            <p className="text-gray-400 mt-2">
-              Risk Score:{" "}
-              <span className="text-black font-bold">
-                {item.risk_score}
-              </span>
-            </p>
+              <p className="text-gray-400 mt-2">
+                Risk Score:{" "}
+                <span className="text-black font-bold">
+                  {item.risk_score}
+                </span>
+              </p>
 
-            <p className="text-gray-400">
-              Age (Years):{" "}
-              <span className="text-black font-bold">
-                {item.risk_features.age_years.toFixed(1)}
-              </span>
-            </p>
+              <p className="text-gray-400">
+                Age (Years):{" "}
+                <span className="text-black font-bold">
+                  {item.risk_features.age_years.toFixed(1)}
+                </span>
+              </p>
 
-            <p className="text-gray-400">
-              Failure Count:{" "}
-              <span className="text-black font-bold">
-                {item.risk_features.failure_count}
-              </span>
-            </p>
+              <p className="text-gray-400">
+                Failure Count:{" "}
+                <span className="text-black font-bold">
+                  {item.risk_features.failure_count}
+                </span>
+              </p>
 
-            <p className="mt-3">
-              Risk Level:{" "}
-              <span
-                className={`font-bold ${
-                  item.risk_rank === "High"
-                    ? "text-red-500"
-                    : item.risk_rank === "Medium"
-                    ? "text-yellow-500"
-                    : "text-green-500"
-                }`}
-              >
-                {item.risk_rank}
-              </span>
-            </p>
+              <p className="mt-3">
+                Risk Level:{" "}
+                <span
+                  className={`font-bold ${item.risk_rank === "High"
+                      ? "text-red-500"
+                      : item.risk_rank === "Medium"
+                        ? "text-yellow-500"
+                        : "text-green-500"
+                    }`}
+                >
+                  {item.risk_rank}
+                </span>
+              </p>
 
-            <p className="mt-2 text-gray-400">
-              Recommendation:{" "}
-              <span className="text-black">
-                {item.recommendations}
-              </span>
-            </p>
-          </div>
-        ))}
+              <p className="mt-2 text-gray-400">
+                Recommendation:{" "}
+                <span className="text-black">
+                  {item.recommendations}
+                </span>
+              </p>
+            </div>
+          ))}
         </div>
       )}
     </div>

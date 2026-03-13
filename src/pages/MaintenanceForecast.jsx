@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { getMaintenanceForecast } from "../api/riskApi";
+import SkeletonLoader from "../components/SkeletonLoader";
 
 const MaintenanceForecast = () => {
   const [data, setData] = useState([]);
@@ -25,13 +26,8 @@ const MaintenanceForecast = () => {
     fetchForecast();
   }, []);
 
-  if (loading) {
-    return <div className="text-white">Loading forecast...</div>;
-  }
-
-  if (error) {
-    return <div className="text-red-500">{error}</div>;
-  }
+  if (loading) return <SkeletonLoader />;
+  if (error) return <div className="text-red-500 font-semibold text-center mt-10 p-8">{error}</div>;
 
   const totalAssets = data.length;
   const highProbability = data.filter(
@@ -123,13 +119,12 @@ const MaintenanceForecast = () => {
                 </td>
                 <td className="px-4 py-2 border">
                   <span
-                    className={`font-bold ${
-                      item.breakdown_probability_30_days === "High"
+                    className={`font-bold ${item.breakdown_probability_30_days === "High"
                         ? "text-red-500"
                         : item.breakdown_probability_30_days === "Medium"
-                        ? "text-orange-500"
-                        : "text-green-500"
-                    }`}
+                          ? "text-orange-500"
+                          : "text-green-500"
+                      }`}
                   >
                     {item.breakdown_probability_30_days}
                   </span>
